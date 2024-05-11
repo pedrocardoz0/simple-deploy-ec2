@@ -14,11 +14,11 @@ jobs:
       - name: Build & Deploy
         env:
             PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            HOSTDNS: ${{secrets.HOST_DNS}}
+            HOSTDNS: ${{ secrets.HOST_DNS }}
 
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ubuntu@$HOSTDNS '
+          ssh -o StrictHostKeyChecking=no -i private_key ubuntu@${HOSTDNS} '
 
               cd /home/ubuntu/node-app &&
               git checkout main &&
