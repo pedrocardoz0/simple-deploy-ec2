@@ -1,0 +1,26 @@
+{
+  "name": "simple-deploy-ec2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "npm i",
+    "pm2": "npm install -g pm2",
+    "build": "pm2 start src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pedrocardoz0/simple-deploy-ec2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pedrocardoz0/simple-deploy-ec2/issues"
+  },
+  "homepage": "https://github.com/pedrocardoz0/simple-deploy-ec2#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
