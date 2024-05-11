@@ -9,27 +9,25 @@ jobs:
     name: Deploy to EC2
     runs-on: ubuntu-latest
 
+    if: github.ref == 'refs/heads/main'
+    strategy:
+      matrix:
+        node-version: [14.x]
+
     steps:
       - uses: actions/checkout@v2 
 
-      - name: Upload Private Key
-        uses: actions/upload-artifact@v2
+      - run: npm run i
+      - run: npm run pm2
+
+      - name: rsync deployments
+        uses: burnett01/rsync-deployments@5.1
         with:
-          name: private-key
-          path: ${{ secrets.SSH_PRIVATE_KEY }}
-      
-      - name: Build & Deploy
-        env:
-            HOSTDNS: ${{ secrets.HOST_DNS }}
+          switches: -avzr --delete
+          path: ./*
+          remote_path: /home/ubuntu/node-app
+          remote_host: ${{ secrets.HOST_DNS }}
+          remote_user: ubuntu
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-        run: |
-          ssh -o StrictHostKeyChecking=no -i $GITHUB_WORKSPACE/private-key ubuntu@${HOSTDNS} '
-              cd /home/ubuntu/node-app &&
-              git checkout main &&
-              git fetch --all &&
-              git pull origin main &&
-              sudo npm i &&
-              sudo npm run pm2 &&
-              sudo npm run build
-              '
-
+      - run: npm run build
