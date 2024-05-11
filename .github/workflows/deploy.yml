@@ -20,19 +20,22 @@ jobs:
         node-version: [14.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2 
+      - name: Build & Deploy
+        env:
+            PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+            HOSTDNS: ${{secrets.HOST_DNS}}
 
-      - run: npm run install
-      - run: npm run pm2
-      - run: npm run build
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ubuntu@${HOSTDNS} '
 
+              cd /home/ubuntu/node-app &&
+              git checkout main &&
+              git fetch --all &&
+              git pull origin main &&
+              sudo npm i &&
+              sudo npm run pm2 &&
+              sudo npm run build
+              '
 
-      - name: rsync deployments
-        uses: burnett01/rsync-deployments@5.1
-        with:
-          switches: -avzr --delete
-          path: ./*
-          remote_path: /var/www/my-app/
-          remote_host: "${{ secrets.HOST_DNS }}"
-          remote_user: ubuntu
-          remote_key: "${{ secrets.SSH_PRIVATE_KEY }}"
