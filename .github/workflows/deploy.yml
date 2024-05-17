@@ -27,7 +27,7 @@ jobs:
               git fetch --all &&
               git reset --hard origin/main &&
               git pull origin main &&
-              sudo npm i &&
+              sudo npm ci &&
               sudo npm run pm2 &&
               sudo pm2 stop ./src/index.js &&
               sudo pm2 start ./src/index.js
